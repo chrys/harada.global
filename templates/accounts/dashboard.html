@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - HaradaFlow{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h2 class="text-3xl font-bold mb-6">Your Harada Charts</h2>
+    
+    {% if charts %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for chart in charts %}
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold mb-2">{{ chart.title }}</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                        Target: {{ chart.target_date }}
+                    </p>
+                    <p class="mb-4 text-sm">
+                        {% if chart.is_draft %}
+                            <span class="inline-block bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100 px-2 py-1 rounded text-xs font-bold">Draft</span>
+                        {% else %}
+                            <span class="inline-block bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100 px-2 py-1 rounded text-xs font-bold">{{ chart.completion_percentage }}% Complete</span>
+                        {% endif %}
+                    </p>
+                    <div class="flex gap-2">
+                        {% if chart.is_draft %}
+                            <a href="{% url 'wizard_step1' chart.id %}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-center text-sm">
+                                Continue Wizard
+                            </a>
+                        {% else %}
+                            <a href="{% url 'matrix_view' chart.id %}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-center text-sm">
+                                View Chart
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-slate-100 dark:bg-slate-800 rounded-lg p-8 text-center">
+            <p class="text-slate-600 dark:text-slate-400 mb-4">You haven't created any charts yet.</p>
+            <a href="{% url 'wizard_start' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md">
+                Create Your First Chart
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="mt-8">
+    <a href="{% url 'wizard_start' %}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md">
+        + New Harada Chart
+    </a>
+</div>
+{% endblock %}

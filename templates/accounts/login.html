@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - HaradaFlow{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
+    <h2 class="text-2xl font-bold mb-6">Login</h2>
+    
+    {% if error %}
+        <div class="bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100 px-4 py-3 rounded mb-4">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        
+        <div>
+            <label for="username" class="block text-sm font-medium mb-1">Username</label>
+            <input type="text" id="username" name="username" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
+        </div>
+
+        <div>
+            <label for="password" class="block text-sm font-medium mb-1">Password</label>
+            <input type="password" id="password" name="password" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
+            Login
+        </button>
+    </form>
+
+    <p class="mt-4 text-center text-sm">
+        Don't have an account? <a href="{% url 'register' %}" class="text-blue-600 hover:underline">Register</a>
+    </p>
+</div>
+{% endblock %}

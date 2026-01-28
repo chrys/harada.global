@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ chart.title }} - HaradaFlow{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h2 class="text-3xl font-bold mb-2">{{ chart.title }}</h2>
+    <p class="text-slate-600 dark:text-slate-400">Target: {{ chart.target_date }} | Completion: {{ chart.completion_percentage }}%</p>
+</div>
+
+<div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-8 overflow-x-auto">
+    <div style="display: grid; grid-template-columns: repeat(9, minmax(80px, 1fr)); gap: 4px;">
+        {% for row in grid %}
+            {% for cell in row %}
+                {% if cell %}
+                    {% if cell.type == 'core_goal' %}
+                        <div class="bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100 rounded p-4 text-center font-bold flex items-center justify-center min-h-24 text-sm" title="{{ cell.content }}">
+                            <div>
+                                <div class="text-2xl font-bold">{{ cell.completion }}%</div>
+                                <div class="text-xs">Done</div>
+                            </div>
+                        </div>
+                    {% elif cell.type == 'pillar' %}
+                        <div class="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 rounded p-4 text-center font-bold flex items-center justify-center min-h-24 text-xs" title="{{ cell.content }}">
+                            {{ cell.content }}
+                        </div>
+                    {% elif cell.type == 'task' %}
+                        <button hx-get="{% url 'task_modal' chart.id cell.id %}" hx-target="#task-modal" hx-swap="innerHTML" class="bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100 rounded p-3 text-left flex items-center justify-center min-h-24 text-xs hover:shadow-md transition cursor-pointer" title="{{ cell.content }}">
+                            <span class="line-clamp-2">{{ cell.content }}</span>
+                        </button>
+                    {% else %}
+                        <div class="bg-slate-100 dark:bg-slate-700 rounded p-4 min-h-24"></div>
+                    {% endif %}
+                {% else %}
+                    <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-h-24"></div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<div id="task-modal"></div>
+
+<div class="mt-8 flex gap-4">
+    <a href="{% url 'dashboard' %}" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-md">
+        Back to Dashboard
+    </a>
+</div>
+{% endblock %}

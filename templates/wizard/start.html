@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Start Wizard - HaradaFlow{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 text-center">
+    <h2 class="text-3xl font-bold mb-6">Create Your Harada Chart</h2>
+    <p class="text-slate-600 dark:text-slate-400 mb-8">Start your journey to achieving your long-term goal through the Harada Method.</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md text-lg">
+            Begin Wizard
+        </button>
+    </form>
+</div>
+{% endblock %}

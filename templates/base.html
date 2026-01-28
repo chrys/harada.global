@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HaradaFlow{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors">
+    <nav class="bg-blue-600 dark:bg-blue-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold"><a href="/">HaradaFlow</a></h1>
+            <div class="flex gap-4">
+                {% if user.is_authenticated %}
+                    <span class="text-sm">{{ user.username }}</span>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="text-sm hover:underline">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-sm hover:underline">Login</a>
+                    <a href="{% url 'register' %}" class="text-sm hover:underline">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 px-4 py-3 rounded">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-slate-100 dark:bg-slate-800 text-center py-4 mt-12">
+        <p class="text-sm text-slate-600 dark:text-slate-400">© 2026 HaradaFlow. Achieve self-reliance through goal-setting.</p>
+    </footer>
+</body>
+</html>

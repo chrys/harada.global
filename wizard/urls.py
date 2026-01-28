@@ -1,0 +1,14 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("start/", views.wizard_start, name="wizard_start"),
+    path("<int:chart_id>/step1/", views.wizard_step1, name="wizard_step1"),
+    path("<int:chart_id>/step2/", views.wizard_step2, name="wizard_step2"),
+    path("<int:chart_id>/step3/", views.wizard_step3, name="wizard_step3"),
+    path(
+        "<int:chart_id>/step3/pillar/<int:pillar_id>/",
+        views.wizard_step3_pillar_view,
+        name="wizard_step3_pillar",
+    ),
+]

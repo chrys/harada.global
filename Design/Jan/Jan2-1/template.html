@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Harada Framework Professional - Executive Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "navy-deep": "#0f172a",
+                        "slate-gray": "#64748b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .grid-bg {
+            background-image: radial-gradient(#64748b 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.15;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-navy-deep dark:text-white min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<div class="w-full flex justify-center border-b border-solid border-[#e2e8f0] dark:border-[#1e293b] bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="layout-content-container flex flex-col w-full max-w-[1200px]">
+<header class="flex items-center justify-between whitespace-nowrap px-6 py-4">
+<div class="flex items-center gap-3 text-navy-deep dark:text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-3xl">grid_view</span>
+</div>
+<h2 class="text-navy-deep dark:text-white text-xl font-extrabold leading-tight tracking-tight">Harada <span class="font-light">Professional</span></h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-10">
+<a class="text-navy-deep dark:text-slate-200 text-sm font-semibold hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-navy-deep dark:text-slate-200 text-sm font-semibold hover:text-primary transition-colors flex items-center gap-1" href="#">
+                                    Harada Method
+                                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</a>
+</div>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-transparent border border-navy-deep dark:border-white text-navy-deep dark:text-white text-sm font-bold transition-all hover:bg-navy-deep hover:text-white dark:hover:bg-white dark:hover:text-background-dark">
+<span class="truncate">Login</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold shadow-sm transition-all hover:bg-primary/90">
+<span class="truncate">Sign Up</span>
+</button>
+</div>
+</div>
+</header>
+</div>
+</div>
+<!-- Hero Section -->
+<div class="relative w-full flex flex-1 justify-center py-12 md:py-24 overflow-hidden">
+<!-- Grid background for executive feel -->
+<div class="absolute inset-0 grid-bg pointer-events-none"></div>
+<div class="layout-content-container flex flex-col max-w-[1000px] flex-1 px-6 relative">
+<div class="flex flex-col items-center text-center gap-8 @container">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+                            Executive Excellence
+                        </div>
+<div class="flex flex-col gap-4">
+<h1 class="font-serif text-navy-deep dark:text-white text-5xl md:text-7xl font-medium leading-[1.1] tracking-tight">
+                                Master the Art of <br/><span class="italic text-primary">Self-Reliance</span>
+</h1>
+<p class="text-slate-gray dark:text-slate-400 text-lg md:text-xl font-normal leading-relaxed max-w-[700px] mx-auto">
+                                The Harada Method is the world’s most effective tool for day-to-day management and personal goal achievement.
+                            </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 mt-4">
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold shadow-lg shadow-primary/20 transition-transform hover:scale-[1.02]">
+<span class="truncate">Start Your 64-Chart</span>
+</button>
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-white dark:bg-slate-800 text-navy-deep dark:text-white border border-slate-200 dark:border-slate-700 text-base font-bold transition-all hover:bg-slate-50 dark:hover:bg-slate-700">
+<span class="truncate">Learn Methodology</span>
+</button>
+</div>
+<!-- Visual representation of the framework -->
+<div class="mt-16 w-full max-w-[800px] aspect-[16/9] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-8 flex items-center justify-center overflow-hidden">
+<div class="grid grid-cols-3 grid-rows-3 gap-2 w-full h-full opacity-40">
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="bg-primary/10 border-2 border-primary rounded flex flex-col items-center justify-center p-4">
+<div class="text-primary font-bold text-xs">GOAL</div>
+</div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+<div class="border border-primary/30 rounded flex items-center justify-center"><span class="material-symbols-outlined text-primary/50">token</span></div>
+</div>
+<div class="absolute flex flex-col items-center gap-2">
+<span class="material-symbols-outlined text-6xl text-primary">analytics</span>
+<p class="font-semibold text-slate-400 uppercase tracking-[0.2em] text-xs">Systematic Achievement</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FeatureSection: Core Pillars -->
+<div class="w-full flex justify-center py-20 bg-white dark:bg-slate-900/50">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 px-6 @container">
+<div class="flex flex-col gap-4 mb-16">
+<h2 class="text-navy-deep dark:text-white text-3xl font-bold tracking-tight">The Core Pillars</h2>
+<div class="h-1.5 w-20 bg-primary rounded-full"></div>
+<p class="text-slate-gray dark:text-slate-400 text-lg font-normal max-w-[600px]">Structured success through the proven Harada Framework methodology, focusing on individual autonomy and long-term discipline.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Pillar 1 -->
+<div class="flex flex-col gap-6 p-8 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+<div class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">psychology</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-navy-deep dark:text-white text-xl font-bold">Self-Reliance</h3>
+<p class="text-slate-gray dark:text-slate-400 text-base leading-relaxed">Develop the mental fortitude and ownership required to succeed independently in any professional environment.</p>
+</div>
+</div>
+<!-- Pillar 2 -->
+<div class="flex flex-col gap-6 p-8 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+<div class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">ads_click</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-navy-deep dark:text-white text-xl font-bold">Goal Setting</h3>
+<p class="text-slate-gray dark:text-slate-400 text-base leading-relaxed">Transform abstract visions into actionable 64-charts, breaking down complex objectives into manageable daily steps.</p>
+</div>
+</div>
+<!-- Pillar 3 -->
+<div class="flex flex-col gap-6 p-8 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+<div class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">event_repeat</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-navy-deep dark:text-white text-xl font-bold">Daily Routine</h3>
+<p class="text-slate-gray dark:text-slate-400 text-base leading-relaxed">Build consistent habits and tracking systems that sustain excellence over months and years.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="w-full flex justify-center py-24 relative overflow-hidden">
+<div class="absolute inset-0 bg-navy-deep dark:bg-slate-950"></div>
+<div class="absolute top-0 right-0 w-1/3 h-full bg-primary/10 skew-x-[-15deg] translate-x-20"></div>
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 px-6 relative z-10">
+<div class="flex flex-col items-center text-center gap-10">
+<div class="flex flex-col gap-4">
+<h2 class="text-white text-4xl md:text-5xl font-bold tracking-tight">Ready to transform your productivity?</h2>
+<p class="text-slate-300 text-lg md:text-xl font-light max-w-[700px] mx-auto">Join executives and high-performers worldwide using the Harada Framework to reclaim their focus.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90">
+<span class="truncate">Get Started Now</span>
+</button>
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-white/10 text-white border border-white/20 text-base font-bold transition-all hover:bg-white/20">
+<span class="truncate">Request Demo</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="w-full flex justify-center py-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark">
+<div class="layout-content-container flex flex-col w-full max-w-[1200px] px-6">
+<footer class="flex flex-col gap-8 text-center @container">
+<div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 md:justify-between">
+<div class="flex items-center gap-2 text-navy-deep dark:text-white">
+<div class="size-5 text-primary">
+<span class="material-symbols-outlined text-xl">grid_view</span>
+</div>
+<h2 class="text-sm font-bold tracking-tight">Harada Professional</h2>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-8">
+<a class="text-slate-gray dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-gray dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-gray dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Methodology</a>
+<a class="text-slate-gray dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+<div class="h-px w-full bg-slate-100 dark:bg-slate-800"></div>
+<p class="text-slate-gray dark:text-slate-500 text-xs font-medium">© 2024 Harada Framework Professional. All rights reserved. Designed for elite performance.</p>
+</footer>
+</div>
+</div>
+</div>
+</div>
+</body></html>
