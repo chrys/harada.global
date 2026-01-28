@@ -21,7 +21,7 @@
         {% for i in "12345678" %}
             <div>
                 <label for="pillar_{{ i }}" class="block text-sm font-medium mb-2">Pillar {{ i }}</label>
-                <input type="text" id="pillar_{{ i }}" name="pillar_{{ i }}" value="{% if pillars %}{{ pillars|slice:forloop.counter0|first.name }}{% endif %}" placeholder="e.g., Technical Skills, Marketing, Health..." class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
+                <input type="text" id="pillar_{{ i }}" name="pillar_{{ i }}" placeholder="e.g., Technical Skills, Marketing, Health..." class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
             </div>
         {% endfor %}
 
