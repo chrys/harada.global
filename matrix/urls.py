@@ -21,4 +21,15 @@ urlpatterns = [
         views.task_update,
         name="task_update",
     ),
+
+    path(
+        "<int:chart_id>/pillar/<int:pillar_id>/task/<int:position>/modal/",
+        views.task_create_modal,
+        name="task_create_modal",
+    ),
+    path(
+        "<int:chart_id>/pillar/<int:pillar_id>/task/<int:position>/create/",
+        views.task_create,
+        name="task_create",
+    ),
 ]
