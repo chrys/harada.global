@@ -14,8 +14,8 @@
             {% for cell in row %}
                 {% if cell %}
                     {% if cell.type == 'core_goal' %}
-                        <div class="bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100 rounded p-4 text-center font-bold flex items-center justify-center min-h-24 text-xs overflow-hidden" title="{{ cell.content }}">
-                            <div class="line-clamp-4 text-center">{{ cell.content }}</div>
+                        <div class="text-slate-900 dark:text-slate-100 rounded p-4 text-center font-bold flex items-center justify-center min-h-24 text-xs overflow-hidden" title="{{ cell.content }}">
+                            <div class="line-clamp-4 text-center font-bold">{{ cell.content }}</div>
                         </div>
                     {% elif cell.type == 'pillar' %}
                         <button hx-get="{% url 'pillar_modal' chart.id cell.id %}" hx-target="#modal-container" hx-swap="innerHTML" class="{% if cell.color == 'blue' %}bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100{% elif cell.color == 'red' %}bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100{% elif cell.color == 'green' %}bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100{% elif cell.color == 'purple' %}bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100{% elif cell.color == 'yellow' %}bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100{% elif cell.color == 'pink' %}bg-pink-100 dark:bg-pink-900 text-pink-900 dark:text-pink-100{% elif cell.color == 'indigo' %}bg-indigo-100 dark:bg-indigo-900 text-indigo-900 dark:text-indigo-100{% elif cell.color == 'orange' %}bg-orange-100 dark:bg-orange-900 text-orange-900 dark:text-orange-100{% endif %} rounded p-3 text-center font-bold flex items-center justify-center min-h-24 text-xs hover:shadow-md transition cursor-pointer" title="{{ cell.content }}">
