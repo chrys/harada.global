@@ -2,7 +2,20 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
-from charts.models import HaradaChart, Task
+from charts.models import HaradaChart, Task, Pillar
+
+
+# Color mapping for Tailwind classes
+COLOR_CLASSES = {
+    "blue": "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100",
+    "red": "bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100",
+    "green": "bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100",
+    "purple": "bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100",
+    "yellow": "bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100",
+    "pink": "bg-pink-100 dark:bg-pink-900 text-pink-900 dark:text-pink-100",
+    "indigo": "bg-indigo-100 dark:bg-indigo-900 text-indigo-900 dark:text-indigo-100",
+    "orange": "bg-orange-100 dark:bg-orange-900 text-orange-900 dark:text-orange-100",
+}
 
 
 @login_required
@@ -14,6 +27,36 @@ def matrix_view(request, chart_id):
     grid = build_matrix_grid(chart)
 
     return render(request, "matrix/view.html", {"chart": chart, "grid": grid})
+
+
+@login_required
+@require_http_methods(["GET"])
+def pillar_modal(request, chart_id, pillar_id):
+    """HTMX endpoint: Get pillar detail modal."""
+    chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
+    pillar = get_object_or_404(Pillar, id=pillar_id, chart=chart)
+
+    return render(
+        request,
+        "matrix/pillar_modal.html",
+        {"pillar": pillar, "chart": chart, "color_classes": COLOR_CLASSES},
+    )
+
+
+@login_required
+@require_http_methods(["POST"])
+def pillar_update(request, chart_id, pillar_id):
+    """HTMX endpoint: Update pillar details."""
+    chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
+    pillar = get_object_or_404(Pillar, id=pillar_id, chart=chart)
+
+    # Update pillar fields
+    pillar.name = request.POST.get("name", pillar.name)
+    pillar.color = request.POST.get("color", pillar.color)
+    pillar.save()
+
+    # Return updated grid to refresh colors
+    return matrix_view(request, chart_id)
 
 
 @login_required
@@ -56,13 +99,10 @@ def build_matrix_grid(chart):
     """
     grid = [[None for _ in range(9)] for _ in range(9)]
 
-    # Center cell (4, 4) - Core Goal
+    # Center cell (4, 4) - Core Goal (show full text, not progress)
     grid[4][4] = {
         "type": "core_goal",
-        "content": chart.core_goal[:50] + "..."
-        if len(chart.core_goal) > 50
-        else chart.core_goal,
-        "completion": chart.completion_percentage,
+        "content": chart.core_goal,
         "title": "Core Goal",
     }
 
@@ -89,6 +129,7 @@ def build_matrix_grid(chart):
                 "type": "pillar",
                 "id": pillar.id,
                 "content": pillar.name,
+                "color": pillar.color,
                 "title": pillar.name,
             }
 
@@ -109,7 +150,9 @@ def build_matrix_grid(chart):
                     "content": task.title,
                     "status": task.status,
                     "frequency": task.frequency,
+                    "color": pillar.color,
                     "title": task.title,
+                    "pillar_id": pillar.id,
                 }
 
     return grid

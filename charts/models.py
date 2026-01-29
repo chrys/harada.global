@@ -46,8 +46,25 @@ class Pillar(models.Model):
     One of 8 high-level themes/areas that compose the Harada Chart.
     """
 
+    COLOR_CHOICES = [
+        ("blue", "Blue"),
+        ("red", "Red"),
+        ("green", "Green"),
+        ("purple", "Purple"),
+        ("yellow", "Yellow"),
+        ("pink", "Pink"),
+        ("indigo", "Indigo"),
+        ("orange", "Orange"),
+    ]
+
     chart = models.ForeignKey(HaradaChart, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    color = models.CharField(
+        max_length=20,
+        choices=COLOR_CHOICES,
+        default="blue",
+        help_text="Color for this pillar and its tasks",
+    )
     position = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(8)],
         help_text="Position 1-8 around the center cell",

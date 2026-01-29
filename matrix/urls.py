@@ -4,6 +4,16 @@ from . import views
 urlpatterns = [
     path("<int:chart_id>/", views.matrix_view, name="matrix_view"),
     path(
+        "<int:chart_id>/pillar/<int:pillar_id>/modal/",
+        views.pillar_modal,
+        name="pillar_modal",
+    ),
+    path(
+        "<int:chart_id>/pillar/<int:pillar_id>/update/",
+        views.pillar_update,
+        name="pillar_update",
+    ),
+    path(
         "<int:chart_id>/task/<int:task_id>/modal/", views.task_modal, name="task_modal"
     ),
     path(

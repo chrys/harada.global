@@ -2,7 +2,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-8 max-w-md w-full">
         <h3 class="text-2xl font-bold mb-4">{{ task.title }}</h3>
         
-        <form hx-post="{% url 'task_update' chart.id task.id %}" hx-target="#task-modal" hx-swap="innerHTML swap:1s" hx-on="htmx:afterSwap: document.getElementById('task-modal').innerHTML = ''" class="space-y-4">
+        <form hx-post="{% url 'task_update' chart.id task.id %}" hx-target="#modal-container" hx-swap="innerHTML swap:1s" hx-on="htmx:afterSwap: document.getElementById('modal-container').innerHTML = ''" class="space-y-4">
             {% csrf_token %}
             
             <div>
