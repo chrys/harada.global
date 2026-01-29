@@ -55,8 +55,8 @@ def pillar_update(request, chart_id, pillar_id):
     pillar.color = request.POST.get("color", pillar.color)
     pillar.save()
 
-    # Return updated grid to refresh colors
-    return matrix_view(request, chart_id)
+    # Return empty response to close modal and let HTMX refresh the page
+    return HttpResponse("")
 
 
 @login_required
