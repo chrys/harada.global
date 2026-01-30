@@ -31,10 +31,13 @@
         </div>
 
         <div class="flex gap-4 pt-6">
-            <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md">
+            <button type="submit" name="complete_chart" value="1" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md">
                 Complete Chart
             </button>
-            <a href="{% url 'wizard_step2' chart.id %}" class="flex-1 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 rounded-md text-center">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md">
+                Save Progress
+            </button>
+            <a href="{% url 'wizard_step2' chart_id=chart_id %}" class="bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 px-6 rounded-md text-center">
                 Back
             </a>
         </div>

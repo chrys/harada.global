@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +30,13 @@ SECRET_KEY = "django-insecure--@&wwo(#su5qrq&&orka@a_ngpzrm0@tobhmb8alssd%*m3$97
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# Clerk Configuration
+CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
+CLERK_PUBLISHABLE_KEY = os.getenv("CLERK_PUBLISHABLE_KEY")
+
+# Django Authentication
+LOGIN_URL = "/sign-in/"
 
 
 # Application definition
@@ -53,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "config.clerk_middleware.ClerkMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -67,6 +79,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "config.context_processors.clerk_context",
             ],
         },
     },

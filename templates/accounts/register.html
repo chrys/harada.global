@@ -1,47 +1,39 @@
 {% extends 'base.html' %}
 
-{% block title %}Register - HaradaFlow{% endblock %}
+{% block title %}Sign Up - HaradaFlow{% endblock %}
 
 {% block content %}
 <div class="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
-    <h2 class="text-2xl font-bold mb-6">Register</h2>
+    <h2 class="text-2xl font-bold mb-6">Create Account</h2>
+    <div id="sign-up"></div>
     
-    {% if error %}
-        <div class="bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100 px-4 py-3 rounded mb-4">
-            {{ error }}
-        </div>
-    {% endif %}
-
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        
-        <div>
-            <label for="username" class="block text-sm font-medium mb-1">Username</label>
-            <input type="text" id="username" name="username" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-        </div>
-
-        <div>
-            <label for="email" class="block text-sm font-medium mb-1">Email</label>
-            <input type="email" id="email" name="email" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-        </div>
-
-        <div>
-            <label for="password" class="block text-sm font-medium mb-1">Password</label>
-            <input type="password" id="password" name="password" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-        </div>
-
-        <div>
-            <label for="password_confirm" class="block text-sm font-medium mb-1">Confirm Password</label>
-            <input type="password" id="password_confirm" name="password_confirm" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-        </div>
-
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
-            Register
-        </button>
-    </form>
-
     <p class="mt-4 text-center text-sm">
-        Already have an account? <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
+        Already have an account? <a href="/sign-in" class="text-blue-600 hover:underline">Sign in</a>
     </p>
 </div>
+
+<script>
+    window.addEventListener('load', async () => {
+        const clerk = window.Clerk;
+        
+        if (clerk) {
+            await clerk.load();
+            
+            // Get redirect URL from query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectUrl = urlParams.get('redirect') || '/dashboard';
+            
+            if (clerk.user) {
+                // Already signed in, redirect to dashboard or saved URL
+                window.location.href = redirectUrl;
+            } else {
+                // Mount SignUp component with redirect after signup
+                clerk.mountSignUp(document.getElementById('sign-up'), {
+                    afterSignUpUrl: redirectUrl,
+                    signInUrl: '/sign-in'
+                });
+            }
+        }
+    });
+</script>
 {% endblock %}
