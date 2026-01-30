@@ -35,3 +35,6 @@ htmlcov/
 # Environment
 .env
 .env.local
+
+#vscode
+Design/Jan/.DS_Store
