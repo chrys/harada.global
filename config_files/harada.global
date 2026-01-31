@@ -1,0 +1,56 @@
+# HTTP - Redirect to HTTPS
+server {
+    if ($host = www.harada.global) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = harada.global) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+	listen 80;
+	server_name harada.global www.harada.global;
+
+	# Helpful for Certbot verification
+	location /.well-known/acme-challenge/ {
+		root /srv/harada;
+	}
+
+	return 301 https://harada.global$request_uri;
+
+
+
+
+}
+
+
+# HTTPS - harada.global
+server {
+	listen 443 ssl;
+	server_name harada.global www.harada.global;
+
+	# SSL Certificates (Certbot will fill these in later)
+	ssl_certificate /etc/letsencrypt/live/harada.global/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/harada.global/privkey.pem;
+	include /etc/letsencrypt/options-ssl-nginx.conf;
+
+
+	root /srv/harada;
+	index index.html;
+	client_max_body_size 20M;
+
+	# Logic for your new site
+	location / {
+		try_files $uri $uri/ = 404;
+	}
+	location ~ /\.ht {
+		deny all;
+	}
+
+
+    ssl_certificate /etc/letsencrypt/live/harada.global/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/harada.global/privkey.pem; # managed by Certbot
+
+}
