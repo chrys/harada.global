@@ -4,3 +4,6 @@ pytest-django>=4.7
 pytest-factoryboy>=2.7
 python-dotenv>=1.0
 PyJWT>=2.8.0
+gunicorn
+psycopg2-binary
+dj-database-url
