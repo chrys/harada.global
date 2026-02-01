@@ -151,3 +151,14 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_SECURITY_POLICY = {
+        "default-src": ("'self'",),
+        "script-src": ("'self'", "https://cdn.tailwindcss.com", "https://unpkg.com/htmx.org", "https://accepted-gnu-5.clerk.accounts.dev"),
+        "style-src": ("'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"),
+        "font-src": ("'self'",),
+        "img-src": ("'self'", "data:", "https:"),
+        "connect-src": ("'self'", "https://accepted-gnu-5.clerk.accounts.dev"),
+    }
