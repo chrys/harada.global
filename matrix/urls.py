@@ -32,4 +32,9 @@ urlpatterns = [
         views.task_create,
         name="task_create",
     ),
+    path(
+        "<int:chart_id>/task/<int:task_id>/comment/",
+        views.task_comment_create,
+        name="task_comment_create",
+    ),
 ]

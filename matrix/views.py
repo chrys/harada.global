@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
-from charts.models import HaradaChart, Task, Pillar
+from charts.models import HaradaChart, Task, Pillar, TaskComment
 
 from .services import build_matrix_grid
 
@@ -130,4 +130,26 @@ def task_create(request, chart_id, pillar_id, position):
         )
 
     # Simple + reliable: reload page to reflect new grid contents.
+    return HttpResponse("")
+
+
+@login_required
+@require_http_methods(["POST"])
+def task_comment_create(request, chart_id, task_id):
+    """HTMX endpoint: Create a comment on a task."""
+    chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
+    task = get_object_or_404(Task, id=task_id, chart=chart)
+
+    content = request.POST.get("content", "").strip()
+
+    if content:
+        comment = TaskComment.objects.create(
+            task=task,
+            user=request.user,
+            content=content
+        )
+        
+        # Return just the new comment HTML to prepend to the list
+        return render(request, "matrix/task_comment.html", {"comment": comment})
+    
     return HttpResponse("")

@@ -1,0 +1,7 @@
+<div class="bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
+    <div class="flex items-start justify-between mb-2">
+        <span class="font-medium text-sm">{{ comment.user.username }}</span>
+        <span class="text-xs text-slate-500 dark:text-slate-400">{{ comment.created_at|date:"M d, Y g:i A" }}</span>
+    </div>
+    <p class="text-sm whitespace-pre-wrap">{{ comment.content }}</p>
+</div>
