@@ -5,8 +5,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import uuid
+import logging
 from datetime import datetime
 from charts.models import HaradaChart, Pillar, Task
+
+logger = logging.getLogger(__name__)
 
 
 def _get_or_create_session_chart(request):
@@ -84,29 +87,56 @@ def _migrate_session_to_database(request, chart_id):
 @require_POST
 def create_chart(request):
     """API endpoint to create a new chart with a goal (both authenticated and unauthenticated)."""
+    logger.info("=== CREATE CHART ENDPOINT CALLED ===")
+    logger.info(f"Request method: {request.method}")
+    logger.info(f"User authenticated: {request.user.is_authenticated}")
+    logger.info(f"User: {request.user}")
+    logger.info(f"Request body length: {len(request.body) if request.body else 0}")
+    
     try:
-        data = json.loads(request.body)
+        # Parse JSON body
+        try:
+            data = json.loads(request.body)
+            logger.info(f"Parsed JSON data: {data}")
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {str(e)}")
+            return JsonResponse({'error': f'Invalid JSON: {str(e)}'}, status=400)
+        
         title = data.get('title', '').strip()
+        logger.info(f"Title extracted: '{title}'")
         
         if not title:
+            logger.warning("Title is empty")
             return JsonResponse({'error': 'Title is required'}, status=400)
         
         if request.user.is_authenticated:
+            logger.info(f"Creating real database chart for user: {request.user.username}")
             # Create a real database chart for authenticated users
-            chart = HaradaChart.objects.create(
-                user=request.user,
-                title=title,
-                core_goal=title,
-                target_date=datetime.strptime("2026-12-31", "%Y-%m-%d").date(),
-                is_draft=True,
-            )
-            return JsonResponse({
-                'chart_id': chart.id,
-                'success': True
-            })
+            try:
+                target_date = datetime.strptime("2026-12-31", "%Y-%m-%d").date()
+                logger.info(f"Target date created: {target_date}")
+                
+                chart = HaradaChart.objects.create(
+                    user=request.user,
+                    title=title,
+                    core_goal=title,
+                    target_date=target_date,
+                    is_draft=True,
+                )
+                logger.info(f"Chart created successfully with ID: {chart.id}")
+                
+                return JsonResponse({
+                    'chart_id': chart.id,
+                    'success': True
+                })
+            except Exception as db_error:
+                logger.error(f"Database error creating chart: {str(db_error)}", exc_info=True)
+                raise
         else:
+            logger.info("Creating temporary session-based chart for unauthenticated user")
             # For unauthenticated users, use a temporary session-based chart
             temp_id = f"temp_{uuid.uuid4().hex[:12]}"
+            logger.info(f"Generated temp_id: {temp_id}")
             
             temp_chart_data = {
                 'id': temp_id,
@@ -120,12 +150,14 @@ def create_chart(request):
             }
             
             _save_session_chart_data(request, temp_id, temp_chart_data)
+            logger.info(f"Session chart saved successfully")
             
             return JsonResponse({
                 'chart_id': temp_id,
                 'success': True
             })
     except Exception as e:
+        logger.error(f"Unexpected error in create_chart: {str(e)}", exc_info=True)
         return JsonResponse({'error': str(e)}, status=500)
 
 
