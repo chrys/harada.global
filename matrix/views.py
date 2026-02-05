@@ -84,8 +84,11 @@ def task_update(request, chart_id, task_id):
     task.status = request.POST.get("status", task.status)
     task.save()
 
-    # Return updated task cell
-    return render(request, "matrix/task_cell.html", {"task": task, "chart": chart})
+    # Return updated task cell with wrapper
+    from django.template.loader import render_to_string
+    cell_html = render_to_string("matrix/task_cell.html", {"task": task, "chart": chart})
+    wrapped_html = f'<div id="task-cell-{task.id}">{cell_html}</div>'
+    return HttpResponse(wrapped_html)
 
 
 @login_required

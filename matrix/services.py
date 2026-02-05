@@ -123,6 +123,7 @@ def build_matrix_grid(chart: HaradaChart):
                     "pillar_id": pillar.id,
                     "pillar_position": pos,
                     "position": task_pos,
+                    "task_obj": task,  # Pass the actual task object
                 }
             else:
                 grid[r][c] = {
