@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import uuid
+from datetime import datetime
 from charts.models import HaradaChart, Pillar, Task
 
 
@@ -33,11 +34,17 @@ def _migrate_session_to_database(request, chart_id):
         return None
     
     # Create the chart
+    target_date_str = temp_data.get('target_date', '2026-12-31')
+    if isinstance(target_date_str, str):
+        target_date = datetime.strptime(target_date_str, "%Y-%m-%d").date()
+    else:
+        target_date = target_date_str
+    
     chart = HaradaChart.objects.create(
         user=request.user,
         title=temp_data.get('title', 'Untitled Goal'),
         core_goal=temp_data.get('core_goal', ''),
-        target_date=temp_data.get('target_date', '2026-12-31'),
+        target_date=target_date,
         perspectives=temp_data.get('perspectives', {}),
         is_draft=False  # Mark as complete since they finished the wizard
     )
@@ -90,7 +97,7 @@ def create_chart(request):
                 user=request.user,
                 title=title,
                 core_goal=title,
-                target_date="2026-12-31",
+                target_date=datetime.strptime("2026-12-31", "%Y-%m-%d").date(),
                 is_draft=True,
             )
             return JsonResponse({
@@ -131,7 +138,7 @@ def wizard_start(request):
             user=request.user,
             title="New Chart",
             core_goal="",
-            target_date="2026-12-31",
+            target_date=datetime.strptime("2026-12-31", "%Y-%m-%d").date(),
             is_draft=True,
         )
         return redirect("wizard_step1", chart_id=chart.id)
@@ -151,11 +158,17 @@ def _get_chart(request, chart_id):
             temp_data = request.session.get('temp_chart_data', {})
             
             # Create a chart from the session data or with a default title
+            target_date_str = temp_data.get('target_date', '2026-12-31')
+            if isinstance(target_date_str, str):
+                target_date = datetime.strptime(target_date_str, "%Y-%m-%d").date()
+            else:
+                target_date = target_date_str
+            
             chart = HaradaChart.objects.create(
                 user=request.user,
                 title=temp_data.get('title', 'Untitled Goal'),
                 core_goal=temp_data.get('core_goal', ''),
-                target_date=temp_data.get('target_date', '2026-12-31'),
+                target_date=target_date,
                 perspectives=temp_data.get('perspectives', {}),
                 is_draft=True
             )
