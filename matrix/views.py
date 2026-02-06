@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
+from django.db.models import Prefetch
 from charts.models import HaradaChart, Task, Pillar, TaskComment
 
 from .services import build_matrix_grid
@@ -35,7 +36,11 @@ def matrix_view(request, chart_id):
 def pillar_modal(request, chart_id, pillar_id):
     """HTMX endpoint: Get pillar detail modal."""
     chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
-    pillar = get_object_or_404(Pillar, id=pillar_id, chart=chart)
+    pillar = get_object_or_404(
+        Pillar.objects.prefetch_related('task_set'),
+        id=pillar_id,
+        chart=chart
+    )
 
     return render(
         request,
@@ -65,7 +70,11 @@ def pillar_update(request, chart_id, pillar_id):
 def task_modal(request, chart_id, task_id):
     """HTMX endpoint: Get task detail modal."""
     chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
-    task = get_object_or_404(Task, id=task_id, chart=chart)
+    task = get_object_or_404(
+        Task.objects.prefetch_related('comments__user'),
+        id=task_id,
+        chart=chart
+    )
 
     return render(request, "matrix/task_modal.html", {"task": task, "chart": chart})
 
@@ -75,7 +84,11 @@ def task_modal(request, chart_id, task_id):
 def task_update(request, chart_id, task_id):
     """HTMX endpoint: Update task details."""
     chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
-    task = get_object_or_404(Task, id=task_id, chart=chart)
+    task = get_object_or_404(
+        Task.objects.select_related('pillar'),
+        id=task_id,
+        chart=chart
+    )
 
     # Update task fields
     task.title = request.POST.get("title", task.title)

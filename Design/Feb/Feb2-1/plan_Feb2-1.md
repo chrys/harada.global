@@ -1,0 +1,1 @@
+1 Feature: Dashboard link does not exist in homepage 
