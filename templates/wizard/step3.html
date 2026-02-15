@@ -7,37 +7,45 @@
     <div class="mb-8">
         <h2 class="text-3xl font-bold mb-4">Step 3: Define Your 64 Action Items</h2>
         <div class="flex gap-2 mb-6">
-            <div class="bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
-            <div class="bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
-            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">3</div>
+            <div
+                class="bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 rounded-full w-10 h-10 flex items-center justify-center font-bold">
+                1</div>
+            <div
+                class="bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 rounded-full w-10 h-10 flex items-center justify-center font-bold">
+                2</div>
+            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">3
+            </div>
         </div>
     </div>
 
     <form method="post" class="space-y-6">
         {% csrf_token %}
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {% for pillar in pillars %}
-                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
-                    <h3 class="text-xl font-bold mb-4 text-blue-600">{{ pillar.name }}</h3>
-                    
-                    {% for i in "12345678" %}
-                        <div class="mb-3">
-                            <input type="text" name="pillar_{{ pillar.position }}_task_{{ i }}" placeholder="Task {{ i }}" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-sm">
-                        </div>
-                    {% endfor %}
+            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4 text-blue-600">{{ pillar.name }}</h3>
+
+                {% for i in "12345678" %}
+                <div class="mb-3">
+                    <input type="text" name="pillar_{{ pillar.position }}_task_{{ i }}" placeholder="Task {{ i }}"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-sm">
                 </div>
+                {% endfor %}
+            </div>
             {% endfor %}
         </div>
 
         <div class="flex gap-4 pt-6">
-            <button type="submit" name="complete_chart" value="1" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md">
+            <button type="submit" name="complete_chart" value="1"
+                class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md">
                 Complete Chart
             </button>
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md">
                 Save Progress
             </button>
-            <a href="{% url 'wizard_step2' chart_id=chart_id %}" class="bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 px-6 rounded-md text-center">
+            <a href="{% url 'wizard_step2' chart_id=chart_id %}"
+                class="bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 px-6 rounded-md text-center">
                 Back
             </a>
         </div>

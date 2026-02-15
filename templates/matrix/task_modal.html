@@ -1,34 +1,42 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick="if(event.target === this) this.remove()">
-    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+    onclick="if(event.target === this) this.remove()">
+    <div
+        class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-4 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <h3 class="text-2xl font-bold mb-4">{{ task.title }}</h3>
-        
-        <form hx-post="{% url 'task_update' chart.id task.id %}" hx-target="#task-cell-{{ task.id }}" hx-swap="outerHTML" hx-on::after-request="document.querySelector('.fixed')?.remove()" class="space-y-4">
+
+        <form hx-post="{% url 'task_update' chart.id task.id %}" hx-target="#task-cell-{{ task.id }}"
+            hx-swap="outerHTML" hx-on::after-request="document.querySelector('.fixed')?.remove()" class="space-y-4">
             {% csrf_token %}
-            
+
             <div>
                 <label for="title" class="block text-sm font-medium mb-1">Title</label>
-                <input type="text" id="title" name="title" value="{{ task.title }}" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
+                <input type="text" id="title" name="title" value="{{ task.title }}"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
             </div>
 
             <div>
                 <label for="description" class="block text-sm font-medium mb-1">Description</label>
-                <textarea id="description" name="description" rows="3" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">{{ task.description }}</textarea>
+                <textarea id="description" name="description" rows="3"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">{{ task.description }}</textarea>
             </div>
 
             <div>
                 <label for="frequency" class="block text-sm font-medium mb-1">Frequency</label>
-                <select id="frequency" name="frequency" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-                    <option value="one_time" {% if task.frequency == 'one_time' %}selected{% endif %}>One-time</option>
-                    <option value="routine" {% if task.frequency == 'routine' %}selected{% endif %}>Routine</option>
+                <select id="frequency" name="frequency"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
+                    <option value="one_time" {% if task.frequency=='one_time' %}selected{% endif %}>One-time</option>
+                    <option value="routine" {% if task.frequency=='routine' %}selected{% endif %}>Routine</option>
                 </select>
             </div>
 
             <div>
                 <label for="status" class="block text-sm font-medium mb-1">Status</label>
-                <select id="status" name="status" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-                    <option value="todo" {% if task.status == 'todo' %}selected{% endif %}>To Do</option>
-                    <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-                    <option value="done" {% if task.status == 'done' %}selected{% endif %}>Done</option>
+                <select id="status" name="status"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
+                    <option value="todo" {% if task.status=='todo' %}selected{% endif %}>To Do</option>
+                    <option value="in_progress" {% if task.status=='in_progress' %}selected{% endif %}>In Progress
+                    </option>
+                    <option value="done" {% if task.status=='done' %}selected{% endif %}>Done</option>
                 </select>
             </div>
 
@@ -36,7 +44,8 @@
                 <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-md">
                     Save
                 </button>
-                <button type="button" onclick="this.closest('.fixed').remove()" class="flex-1 bg-slate-300 dark:bg-slate-600 hover:bg-slate-400 dark:hover:bg-slate-500 text-slate-900 dark:text-white font-bold py-2 rounded-md">
+                <button type="button" onclick="this.closest('.fixed').remove()"
+                    class="flex-1 bg-slate-300 dark:bg-slate-600 hover:bg-slate-400 dark:hover:bg-slate-500 text-slate-900 dark:text-white font-bold py-2 rounded-md">
                     Close
                 </button>
             </div>
@@ -45,12 +54,15 @@
         <!-- Comments Section -->
         <div class="mt-8 border-t border-slate-300 dark:border-slate-700 pt-6" id="comments-section">
             <h4 class="text-lg font-bold mb-4">Comments</h4>
-            
+
             <!-- Add Comment Form -->
-            <form hx-post="{% url 'task_comment_create' chart.id task.id %}" hx-target="#comments-list" hx-swap="afterbegin" hx-on="htmx:afterSwap: this.reset()" class="mb-6">
+            <form hx-post="{% url 'task_comment_create' chart.id task.id %}" hx-target="#comments-list"
+                hx-swap="afterbegin" hx-on="htmx:afterSwap: this.reset()" class="mb-6">
                 {% csrf_token %}
-                <textarea name="content" rows="3" placeholder="Add a comment..." required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 mb-2"></textarea>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm">
+                <textarea name="content" rows="3" placeholder="Add a comment..." required
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 mb-2"></textarea>
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm">
                     Add Comment
                 </button>
             </form>
@@ -61,7 +73,8 @@
                 <div class="bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
                     <div class="flex items-start justify-between mb-2">
                         <span class="font-medium text-sm">{{ comment.user.username }}</span>
-                        <span class="text-xs text-slate-500 dark:text-slate-400">{{ comment.created_at|date:"M d, Y g:i A" }}</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">{{ comment.created_at|date:"M d, Y g:i
+                            A" }}</span>
                     </div>
                     <p class="text-sm whitespace-pre-wrap">{{ comment.content }}</p>
                 </div>

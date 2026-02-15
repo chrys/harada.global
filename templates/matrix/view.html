@@ -8,34 +8,41 @@
     <p class="text-slate-600 dark:text-slate-400">Target: {{ chart.target_date }} | Completion: {{ chart.completion_percentage }}%</p>
 </div>
 
-<div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-8 overflow-x-auto">
-    <div style="display: grid; grid-template-columns: repeat(9, minmax(80px, 1fr)); gap: 4px;">
+<div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-4 sm:p-8 overflow-x-auto">
+    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 text-center md:hidden">← Scroll to see full matrix →</p>
+    <div style="display: grid; grid-template-columns: repeat(9, minmax(80px, 1fr)); gap: 4px; min-width: 720px;">
         {% for row in grid %}
-            {% for cell in row %}
-                {% if cell %}
-                    {% if cell.type == 'core_goal' %}
-                        <div class="bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-600 dark:border-blue-500 text-slate-900 dark:text-slate-100 rounded p-4 text-center font-bold flex items-center justify-center min-h-24 text-xs overflow-hidden shadow-md ring-2 ring-blue-600/20" title="{{ cell.content }}">
-                            <div class="line-clamp-4 text-center font-bold">{{ cell.content }}</div>
-                        </div>
-                    {% elif cell.type == 'pillar' %}
-                        <button hx-get="{% url 'pillar_modal' chart.id cell.id %}" hx-target="#modal-container" hx-swap="innerHTML" class="{% if cell.color == 'blue' %}bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100{% elif cell.color == 'red' %}bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100{% elif cell.color == 'green' %}bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100{% elif cell.color == 'purple' %}bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100{% elif cell.color == 'yellow' %}bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100{% elif cell.color == 'pink' %}bg-pink-100 dark:bg-pink-900 text-pink-900 dark:text-pink-100{% elif cell.color == 'indigo' %}bg-indigo-100 dark:bg-indigo-900 text-indigo-900 dark:text-indigo-100{% elif cell.color == 'orange' %}bg-orange-100 dark:bg-orange-900 text-orange-900 dark:text-orange-100{% endif %} rounded p-3 text-center font-bold flex items-center justify-center min-h-24 text-xs hover:shadow-md transition cursor-pointer" title="{{ cell.content }}">
-                            <span class="line-clamp-2">{{ cell.content }}</span>
-                        </button>
-                    {% elif cell.type == 'task' %}
-                        <div id="task-cell-{{ cell.id }}">
-                            {% include 'matrix/task_cell.html' with task=cell.task_obj chart=chart %}
-                        </div>
-                    {% elif cell.type == 'task_empty' %}
-                        <button hx-get="{% url 'task_create_modal' chart.id cell.pillar_id cell.position %}" hx-target="#modal-container" hx-swap="innerHTML" class="bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded p-3 text-center font-semibold flex items-center justify-center min-h-24 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 hover:shadow-md transition cursor-pointer" title="Add task">
-                            <span>{{ cell.content }}</span>
-                        </button>
-                    {% else %}
-                        <div class="bg-slate-100 dark:bg-slate-700 rounded p-4 min-h-24"></div>
-                    {% endif %}
-                {% else %}
-                    <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-h-24"></div>
-                {% endif %}
-            {% endfor %}
+        {% for cell in row %}
+        {% if cell %}
+        {% if cell.type == 'core_goal' %}
+        <div class="bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-600 dark:border-blue-500 text-slate-900 dark:text-slate-100 rounded p-4 text-center font-bold flex items-center justify-center min-h-24 text-xs overflow-hidden shadow-md ring-2 ring-blue-600/20"
+            title="{{ cell.content }}">
+            <div class="line-clamp-4 text-center font-bold">{{ cell.content }}</div>
+        </div>
+        {% elif cell.type == 'pillar' %}
+        <button hx-get="{% url 'pillar_modal' chart.id cell.id %}" hx-target="#modal-container" hx-swap="innerHTML"
+            class="{% if cell.color == 'blue' %}bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100{% elif cell.color == 'red' %}bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100{% elif cell.color == 'green' %}bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100{% elif cell.color == 'purple' %}bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100{% elif cell.color == 'yellow' %}bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100{% elif cell.color == 'pink' %}bg-pink-100 dark:bg-pink-900 text-pink-900 dark:text-pink-100{% elif cell.color == 'indigo' %}bg-indigo-100 dark:bg-indigo-900 text-indigo-900 dark:text-indigo-100{% elif cell.color == 'orange' %}bg-orange-100 dark:bg-orange-900 text-orange-900 dark:text-orange-100{% endif %} rounded p-3 text-center font-bold flex items-center justify-center min-h-24 text-xs hover:shadow-md transition cursor-pointer"
+            title="{{ cell.content }}">
+            <span class="line-clamp-2">{{ cell.content }}</span>
+        </button>
+        {% elif cell.type == 'task' %}
+        <div id="task-cell-{{ cell.id }}">
+            {% include 'matrix/task_cell.html' with task=cell.task_obj chart=chart %}
+        </div>
+        {% elif cell.type == 'task_empty' %}
+        <button hx-get="{% url 'task_create_modal' chart.id cell.pillar_id cell.position %}"
+            hx-target="#modal-container" hx-swap="innerHTML"
+            class="bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded p-3 text-center font-semibold flex items-center justify-center min-h-24 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 hover:shadow-md transition cursor-pointer"
+            title="Add task">
+            <span>{{ cell.content }}</span>
+        </button>
+        {% else %}
+        <div class="bg-slate-100 dark:bg-slate-700 rounded p-4 min-h-24"></div>
+        {% endif %}
+        {% else %}
+        <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-h-24"></div>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
     </div>
 </div>

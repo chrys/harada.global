@@ -5,24 +5,18 @@
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
-        <h1 class="text-5xl font-bold mb-4">HaradaFlow</h1>
-        <p class="text-xl text-slate-600 dark:text-slate-400 mb-12">Achieve self-reliance through the Harada Method 64-cell matrix.</p>
-        
+        <h1 class="text-3xl sm:text-5xl font-bold mb-4">HaradaFlow</h1>
+        <p class="text-base sm:text-xl text-slate-600 dark:text-slate-400 mb-12">Achieve self-reliance through the
+            Harada Method 64-cell matrix.</p>
+
         <!-- Goal Input Section -->
-        <form id="goal-form" class="bg-gradient-to-r from-blue-50 to-slate-50 dark:from-slate-800 dark:to-slate-750 rounded-2xl border-2 border-blue-200 dark:border-blue-600 p-8 mb-12">
+        <form id="goal-form"
+            class="bg-gradient-to-r from-blue-50 to-slate-50 dark:from-slate-800 dark:to-slate-750 rounded-2xl border-2 border-blue-200 dark:border-blue-600 p-8 mb-12">
             <div class="flex flex-col sm:flex-row gap-3 items-center">
-                <input 
-                    type="text" 
-                    id="goal-input"
-                    placeholder="What's your big goal for 2026?" 
-                    required
-                    class="flex-1 px-6 py-4 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button 
-                    type="submit" 
-                    id="generate-btn"
-                    class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <input type="text" id="goal-input" placeholder="What's your big goal for 2026?" required
+                    class="flex-1 px-6 py-4 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button type="submit" id="generate-btn"
+                    class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
                     💫 Generate Plan
                 </button>
             </div>
@@ -33,17 +27,20 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
         <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold mb-4">📋 The 64-Cell Matrix</h2>
-            <p class="text-slate-600 dark:text-slate-400">Break down your long-term goals into 8 pillars with 8 action items each for a comprehensive roadmap.</p>
+            <p class="text-slate-600 dark:text-slate-400">Break down your long-term goals into 8 pillars with 8 action
+                items each for a comprehensive roadmap.</p>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold mb-4">🧘 Self-Reliance</h2>
-            <p class="text-slate-600 dark:text-slate-400">Based on the Harada Method principles for achieving self-reliance through systematic goal-setting.</p>
+            <p class="text-slate-600 dark:text-slate-400">Based on the Harada Method principles for achieving
+                self-reliance through systematic goal-setting.</p>
         </div>
 
         <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold mb-4">🎯 Guided Wizard</h2>
-            <p class="text-slate-600 dark:text-slate-400">Step-by-step wizard guides you through defining your core goal, pillars, and 64 action items.</p>
+            <p class="text-slate-600 dark:text-slate-400">Step-by-step wizard guides you through defining your core
+                goal, pillars, and 64 action items.</p>
         </div>
     </div>
 </div>
@@ -51,28 +48,28 @@
 <script>
     document.getElementById('goal-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const clerk = window.Clerk;
-        
+
         if (!clerk) {
             alert('Clerk is not loaded');
             return;
         }
-        
+
         await clerk.load();
-        
+
         const goal = document.getElementById('goal-input').value.trim();
         const btn = document.getElementById('generate-btn');
-        
+
         if (!goal) {
             alert('Please enter your goal');
             return;
         }
-        
+
         try {
             btn.disabled = true;
             btn.textContent = '⏳ Creating...';
-            
+
             // Create a new chart with the goal
             const response = await fetch('/wizard/create-chart/', {
                 method: 'POST',
@@ -82,23 +79,23 @@
                 },
                 body: JSON.stringify({ title: goal })
             });
-            
+
             if (!response.ok) {
                 throw new Error('Failed to create chart');
             }
-            
+
             const data = await response.json();
-            
+
             // Redirect to wizard step 1 with the new chart ID (both authenticated and unauthenticated)
             window.location.href = `/wizard/${data.chart_id}/step1/`;
-            
+
         } catch (error) {
             alert('Error: ' + error.message);
             btn.disabled = false;
             btn.textContent = '💫 Generate Plan';
         }
     });
-    
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -115,5 +112,3 @@
     }
 </script>
 {% endblock %}
-
-
