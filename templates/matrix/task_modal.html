@@ -24,8 +24,8 @@
                 <label for="frequency" class="block text-sm font-medium mb-1">Frequency</label>
                 <select id="frequency" name="frequency"
                     class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-                    <option value="one_time" {% if task.frequency=='one_time' %}selected{% endif %}>One-time</option>
-                    <option value="routine" {% if task.frequency=='routine' %}selected{% endif %}>Routine</option>
+                    <option value="one_time" {% if task.frequency == "one_time" %}selected{% endif %}>One-time</option>
+                    <option value="routine" {% if task.frequency == "routine" %}selected{% endif %}>Routine</option>
                 </select>
             </div>
 
@@ -33,10 +33,10 @@
                 <label for="status" class="block text-sm font-medium mb-1">Status</label>
                 <select id="status" name="status"
                     class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
-                    <option value="todo" {% if task.status=='todo' %}selected{% endif %}>To Do</option>
-                    <option value="in_progress" {% if task.status=='in_progress' %}selected{% endif %}>In Progress
+                    <option value="todo" {% if task.status == "todo" %}selected{% endif %}>To Do</option>
+                    <option value="in_progress" {% if task.status == "in_progress" %}selected{% endif %}>In Progress
                     </option>
-                    <option value="done" {% if task.status=='done' %}selected{% endif %}>Done</option>
+                    <option value="done" {% if task.status == "done" %}selected{% endif %}>Done</option>
                 </select>
             </div>
 
