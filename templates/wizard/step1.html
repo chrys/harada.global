@@ -32,37 +32,20 @@
             <input type="date" id="target_date" name="target_date" value="{{ chart.target_date }}" required class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">
         </div>
 
-        <div class="border-t border-slate-300 dark:border-slate-700 pt-6">
-            <h3 class="text-lg font-bold mb-4">The Four Perspectives</h3>
-            
-            <div>
-                <label for="self_tangible" class="block text-sm font-medium mb-2">🏆 Self / Tangible</label>
-                <textarea id="self_tangible" name="self_tangible" rows="3" placeholder="Physical rewards or status" class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">{{ chart.perspectives.self_tangible }}</textarea>
+        <div class="space-y-4 pt-6">
+            <div class="flex gap-4">
+                <button type="submit" name="action" value="manual" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-md">
+                    Enter pillars and tasks manually
+                </button>
+                <button type="submit" name="action" value="ai" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md">
+                    Use AI for inspiration
+                </button>
             </div>
-
-            <div class="mt-4">
-                <label for="self_intangible" class="block text-sm font-medium mb-2">🧠 Self / Intangible</label>
-                <textarea id="self_intangible" name="self_intangible" rows="3" placeholder="Personal growth and internal feelings" class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">{{ chart.perspectives.self_intangible }}</textarea>
+            <div class="flex justify-end">
+                <a href="{% url 'dashboard' %}" class="w-full sm:w-auto bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 rounded-md text-center">
+                    Cancel
+                </a>
             </div>
-
-            <div class="mt-4">
-                <label for="others_tangible" class="block text-sm font-medium mb-2">🌍 Others / Tangible</label>
-                <textarea id="others_tangible" name="others_tangible" rows="3" placeholder="Measurable impact on others" class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">{{ chart.perspectives.others_tangible }}</textarea>
-            </div>
-
-            <div class="mt-4">
-                <label for="others_intangible" class="block text-sm font-medium mb-2">❤️ Others / Intangible</label>
-                <textarea id="others_intangible" name="others_intangible" rows="3" placeholder="Emotional impact on others" class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700">{{ chart.perspectives.others_intangible }}</textarea>
-            </div>
-        </div>
-
-        <div class="flex gap-4 pt-6">
-            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-md">
-                Continue to Step 2
-            </button>
-            <a href="{% url 'dashboard' %}" class="flex-1 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-3 rounded-md text-center">
-                Cancel
-            </a>
         </div>
     </form>
 </div>

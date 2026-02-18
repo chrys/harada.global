@@ -260,7 +260,12 @@ def wizard_step1(request, chart_id):
             }
             chart.save()
         
-        return redirect("wizard_step2", chart_id=chart_id)
+        # Check which action was taken
+        action = request.POST.get("action", "manual")
+        if action == "ai":
+            return redirect("ai_inspiration", chart_id=chart_id)
+        else:
+            return redirect("wizard_step2", chart_id=chart_id)
 
     return render(request, "wizard/step1.html", {"chart": chart})
 
@@ -455,3 +460,278 @@ def wizard_step3_pillar_view(request, chart_id, pillar_id):
     return render(
         request, "wizard/step3_pillar.html", {"pillar": pillar, "tasks": tasks}
     )
+
+
+def ai_inspiration(request, chart_id):
+    """
+    AI inspiration page for decomposing a goal into 64 tasks.
+    
+    User provides AI output as JSON and it gets processed to populate pillars.
+    """
+    chart = _get_chart(request, chart_id)
+    
+    if not chart:
+        return redirect('home')
+    
+    # Extract goal and date from chart data
+    if isinstance(chart, dict):
+        goal = chart.get('core_goal', '')
+        target_date = chart.get('target_date', '')
+    else:
+        goal = chart.core_goal
+        target_date = chart.target_date
+    
+    prompt = f"""Role: You are an expert productivity coach specializing in the Harada Method and the Open Window 64 (OW64) framework.
+
+Task: Deconstruct the following primary goal into a comprehensive Harada Method 64-cell grid.
+
+Primary Goal: {goal}
+
+Target Completion Date: {target_date}
+
+Instructions:
+
+Identify 8 essential pillars (sub-goals/themes) required to achieve the primary goal. These should cover a mix of hard skills, mindset, health, and routines.
+
+For each of the 8 pillars, define 8 concrete, actionable tasks or behaviors (64 tasks total).
+
+Ensure tasks are specific, measurable, and realistically achievable within the provided timeframe.
+
+Output Format: You MUST return the data strictly as a single JSON object with the following structure:
+{{
+"goal": "The primary goal",
+"completion_date": "The target date",
+"pillars": [
+{{
+"pillar_name": "Title of Pillar 1",
+"tasks": ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5", "Task 6", "Task 7", "Task 8"]
+}},
+... (repeated for all 8 pillars)
+]
+}}"""
+    
+    if request.method == "POST":
+        logger.info(f"=== AI INSPIRATION POST REQUEST ===")
+        logger.info(f"Chart ID: {chart_id}, Authenticated: {request.user.is_authenticated}")
+        json_input = request.POST.get("json_input", "").strip()
+        logger.info(f"JSON input length: {len(json_input)}")
+        
+        if not json_input:
+            logger.warning("JSON input is empty")
+            return render(request, "wizard/ai_inspiration.html", {
+                "chart": chart,
+                "prompt": prompt,
+                "error": "Please paste the JSON from the AI."
+            })
+        
+        try:
+            logger.info("Attempting to parse JSON...")
+            ai_data = json.loads(json_input)
+            logger.info(f"✅ JSON parsed successfully, pillars: {len(ai_data.get('pillars', []))}")
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ JSON parse error: {str(e)}")
+            return render(request, "wizard/ai_inspiration.html", {
+                "chart": chart,
+                "prompt": prompt,
+                "error": f"Invalid JSON: {str(e)}"
+            })
+        
+        # Validate JSON structure
+        logger.info(f"Validating JSON structure...")
+        if not isinstance(ai_data.get("pillars"), list) or len(ai_data["pillars"]) != 8:
+            logger.error(f"❌ Invalid pillar count: {len(ai_data.get('pillars', []))}")
+            return render(request, "wizard/ai_inspiration.html", {
+                "chart": chart,
+                "prompt": prompt,
+                "error": "JSON must contain exactly 8 pillars."
+            })
+        
+        logger.info(f"Chart type: {type(chart)}, isinstance dict: {isinstance(chart, dict)}, is temp: {str(chart_id).startswith('temp_')}")
+        
+        # Process the AI data and populate chart
+        if str(chart_id).startswith('temp_'):
+            logger.info("🔵 Processing TEMPORARY chart")
+            # Session-based chart
+            pillars_data = {}
+            for idx, pillar_data in enumerate(ai_data["pillars"], 1):
+                tasks_list = pillar_data.get("tasks", [])
+                if len(tasks_list) != 8:
+                    logger.error(f"❌ Pillar {idx} has {len(tasks_list)} tasks instead of 8")
+                    return render(request, "wizard/ai_inspiration.html", {
+                        "chart": chart,
+                        "prompt": prompt,
+                        "error": f"Each pillar must have exactly 8 tasks. Pillar {idx} has {len(tasks_list)}."
+                    })
+                
+                tasks_dict = {str(i+1): {"title": task} for i, task in enumerate(tasks_list)}
+                pillars_data[str(idx)] = {
+                    "name": pillar_data.get("pillar_name", f"Pillar {idx}"),
+                    "tasks": tasks_dict
+                }
+            
+            chart['pillars'] = pillars_data
+            _save_session_chart_data(request, chart_id, chart)
+            logger.info(f"✅ Temporary chart pillars saved, migrating to database...")
+            
+            # Require authentication to complete
+            if not request.user.is_authenticated:
+                logger.warning("❌ User not authenticated for temporary chart")
+                return redirect(f'/sign-up?redirect=/wizard/{chart_id}/ai-inspiration/')
+            
+            # User is authenticated, migrate to real chart
+            logger.info("Migrating temporary chart to database...")
+            migrated_chart = _migrate_session_to_database(request, chart_id)
+            if migrated_chart:
+                logger.info(f"✅ Migration successful, chart ID: {migrated_chart.id}, redirecting to matrix_view")
+                return redirect("matrix_view", chart_id=migrated_chart.id)
+            else:
+                logger.error("❌ Migration failed")
+                return redirect('home')
+        else:
+            logger.info(f"🟢 Processing DATABASE chart, ID: {chart_id}")
+            # Database chart (requires authentication)
+            if not request.user.is_authenticated:
+                logger.warning("❌ User not authenticated for database chart")
+                return redirect('sign_up')
+            
+            logger.info(f"Getting chart object for ID: {chart_id}, user: {request.user}")
+            chart_obj = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
+            logger.info(f"✅ Got chart object: {chart_obj}")
+            
+            # Clear existing pillars and tasks
+            logger.info("Clearing existing pillars and tasks...")
+            deleted_count, _ = chart_obj.pillar_set.all().delete()
+            logger.info(f"✅ Deleted {deleted_count} pillars")
+            
+            # Create new pillars and tasks
+            logger.info(f"Creating 8 new pillars...")
+            for idx, pillar_data in enumerate(ai_data["pillars"], 1):
+                tasks_list = pillar_data.get("tasks", [])
+                if len(tasks_list) != 8:
+                    logger.error(f"❌ Pillar {idx} has {len(tasks_list)} tasks instead of 8")
+                    return render(request, "wizard/ai_inspiration.html", {
+                        "chart": chart_obj,
+                        "prompt": prompt,
+                        "error": f"Each pillar must have exactly 8 tasks. Pillar {idx} has {len(tasks_list)}."
+                    })
+                
+                pillar = Pillar.objects.create(
+                    chart=chart_obj,
+                    name=pillar_data.get("pillar_name", f"Pillar {idx}"),
+                    position=idx
+                )
+                logger.info(f"✅ Created pillar {idx}: {pillar.name}")
+                
+                for task_idx, task_title in enumerate(tasks_list, 1):
+                    Task.objects.create(
+                        chart=chart_obj,
+                        pillar=pillar,
+                        title=task_title,
+                        position=task_idx,
+                        status='todo',
+                        frequency='one_time'
+                    )
+                logger.info(f"✅ Created 8 tasks for pillar {idx}")
+            
+            # Mark chart as complete and redirect to matrix view
+            logger.info(f"Marking chart as complete...")
+            chart_obj.is_draft = False
+            chart_obj.save()
+            logger.info(f"✅ Chart marked as complete. Redirecting to matrix_view with chart_id={chart_id}")
+            return redirect("matrix_view", chart_id=chart_id)
+        
+        try:
+            ai_data = json.loads(json_input)
+        except json.JSONDecodeError as e:
+            return render(request, "wizard/ai_inspiration.html", {
+                "chart": chart,
+                "prompt": prompt,
+                "error": f"Invalid JSON: {str(e)}"
+            })
+        
+        # Validate JSON structure
+        if not isinstance(ai_data.get("pillars"), list) or len(ai_data["pillars"]) != 8:
+            return render(request, "wizard/ai_inspiration.html", {
+                "chart": chart,
+                "prompt": prompt,
+                "error": "JSON must contain exactly 8 pillars."
+            })
+        
+        # Process the AI data and populate chart
+        if str(chart_id).startswith('temp_'):
+            # Session-based chart
+            pillars_data = {}
+            for idx, pillar_data in enumerate(ai_data["pillars"], 1):
+                tasks_list = pillar_data.get("tasks", [])
+                if len(tasks_list) != 8:
+                    return render(request, "wizard/ai_inspiration.html", {
+                        "chart": chart,
+                        "prompt": prompt,
+                        "error": f"Each pillar must have exactly 8 tasks. Pillar {idx} has {len(tasks_list)}."
+                    })
+                
+                tasks_dict = {str(i+1): {"title": task} for i, task in enumerate(tasks_list)}
+                pillars_data[str(idx)] = {
+                    "name": pillar_data.get("pillar_name", f"Pillar {idx}"),
+                    "tasks": tasks_dict
+                }
+            
+            chart['pillars'] = pillars_data
+            _save_session_chart_data(request, chart_id, chart)
+            # Database chart (requires authentication)
+            if not request.user.is_authenticated:
+                return redirect('sign_up')
+            
+            chart_obj = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
+            
+            # Clear existing pillars and tasks
+            chart_obj.pillar_set.all().delete()
+            
+            # Create new pillars and tasks
+            for idx, pillar_data in enumerate(ai_data["pillars"], 1):
+                tasks_list = pillar_data.get("tasks", [])
+                if len(tasks_list) != 8:
+                    return render(request, "wizard/ai_inspiration.html", {
+                        "chart": chart_obj,
+                        "prompt": prompt,
+                        "error": f"Each pillar must have exactly 8 tasks. Pillar {idx} has {len(tasks_list)}."
+                    })
+                
+                pillar = Pillar.objects.create(
+                    chart=chart_obj,
+                    name=pillar_data.get("pillar_name", f"Pillar {idx}"),
+                    position=idx
+                )
+                
+                for task_idx, task_title in enumerate(tasks_list, 1):
+                    Task.objects.create(
+                        chart=chart_obj,
+                        pillar=pillar,
+                        title=task_title,
+                        position=task_idx,
+                        status='todo',
+                        frequency='one_time'
+                    )
+            
+            # Mark chart as complete and redirect to matrix view
+            chart_obj.is_draft = False
+            chart_obj.save()
+            return redirect("matrix_view", chart_id=chart_id)
+        
+        # For temporary charts, migrate to database
+        if str(chart_id).startswith('temp_'):
+            # Require authentication to complete
+            if not request.user.is_authenticated:
+                return redirect(f'/sign-up?redirect=/wizard/{chart_id}/ai-inspiration/')
+            
+            # User is authenticated, migrate to real chart
+            migrated_chart = _migrate_session_to_database(request, chart_id)
+            if migrated_chart:
+                return redirect("matrix_view", chart_id=migrated_chart.id)
+            else:
+                return redirect('home')
+    
+    return render(request, "wizard/ai_inspiration.html", {
+        "chart": chart,
+        "prompt": prompt
+    })
