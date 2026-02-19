@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from charts.models import HaradaChart
 
 
 def sign_in(request):
@@ -41,6 +42,28 @@ def dashboard(request):
     """User dashboard showing all charts."""
     charts = request.user.harada_charts.all()
     return render(request, "accounts/dashboard.html", {"charts": charts})
+
+
+@login_required
+def delete_chart(request, chart_id):
+    """
+    Delete a chart after user confirmation.
+
+    Parameters
+    ----------
+    request : HttpRequest
+        The HTTP request object.
+    chart_id : int
+        The ID of the chart to delete.
+
+    Returns
+    -------
+    HttpResponse
+        Redirects to dashboard on successful deletion.
+    """
+    chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
+    chart.delete()
+    return redirect("dashboard")
 
 
 
