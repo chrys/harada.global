@@ -38,3 +38,4 @@ htmlcov/
 
 #vscode
 Design/Jan/.DS_Store
+.env.example
