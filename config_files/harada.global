@@ -1,57 +1,51 @@
-# HTTP - Redirect to HTTPS
-server {
-    listen 80;
-    server_name harada.global www.harada.global;
-
-    # Helpful for Certbot verification
-    location /.well-known/acme-challenge/ {
-        root /srv/harada;
-    }
-
-    return 301 https://harada.global$request_uri;
-}
-
-
 # HTTPS - harada.global
 server {
-    listen 443 ssl;
-    server_name harada.global www.harada.global;
+	listen 443 ssl;
+	server_name harada.global www.harada.global;
 
-    # SSL Certificates (Certbot will fill these in later)
-    ssl_certificate /etc/letsencrypt/live/harada.global/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/harada.global/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+	include snippets/global-security.conf;
 
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+	
+	location ~ ^/(sign-in|accounts/login|login) {
+      		limit_req zone=login_limit burst=10 nodelay;
+  	}
 
-    client_max_body_size 20M;
+	# SSL Certificates (Certbot will fill these in later)
+	ssl_certificate /etc/letsencrypt/live/harada.global/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/harada.global/privkey.pem;
+	include /etc/letsencrypt/options-ssl-nginx.conf;
 
-    # Static files
-    location /static/ {
-        alias /srv/harada/staticfiles/;
-    }
+	# Security headers
+	add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+	add_header X-Content-Type-Options "nosniff" always;
+	add_header X-Frame-Options "SAMEORIGIN" always;
+	add_header X-XSS-Protection "1; mode=block" always;
+	add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+	root /srv/harada;
+	index index.html;
+	client_max_body_size 20M;
 
-    # Media files
-    location /media/ {
-        alias /srv/harada/media/;
-    }
 
-    # Proxy to Gunicorn
-    location / {
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_pass http://127.0.0.1:8000;
-    }
+	# Static files
+	location /static/ {
+		alias /srv/harada/staticfiles/;
+	}
 
-    location ~ /\.ht {
-        deny all;
-    }
+	# Media files
+	location /media/ {
+		alias /srv/harada/media/;
+	}
+
+	# Proxy to Gunicorn
+	location / {
+		proxy_set_header Host $http_host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_pass http://127.0.0.1:8000;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
 }
