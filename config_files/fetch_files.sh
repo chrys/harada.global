@@ -3,6 +3,7 @@ REMOTE_HOST="myVPS3"
 FILES=(
 	    "/etc/nginx/sites-available/harada.global"
 		"/etc/systemd/system/harada.service"
+		"/etc/nginx/nginx.conf"
 	)
 	
 # === SCP Operation Loop ===

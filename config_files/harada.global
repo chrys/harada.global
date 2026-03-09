@@ -5,10 +5,16 @@ server {
 
 	include snippets/global-security.conf;
 
-	
 	location ~ ^/(sign-in|accounts/login|login) {
-      		limit_req zone=login_limit burst=10 nodelay;
-  	}
+    	limit_req zone=login_limit burst=10 nodelay;  
+    	
+	proxy_pass http://127.0.0.1:8000;
+    	proxy_set_header Host $http_host;
+    	proxy_set_header X-Real-IP $remote_addr;
+    	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    	proxy_set_header X-Forwarded-Proto $scheme;
+	}	
+
 
 	# SSL Certificates (Certbot will fill these in later)
 	ssl_certificate /etc/letsencrypt/live/harada.global/fullchain.pem;
@@ -48,4 +54,12 @@ server {
 	location ~ /\.ht {
 		deny all;
 	}
+}
+
+
+# HTTP - redirect to HTTPS
+server {
+    listen 80;
+    server_name harada.global www.harada.global;
+    return 301 https://$server_name$request_uri;
 }
