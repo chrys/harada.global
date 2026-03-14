@@ -65,7 +65,7 @@ class TestResponsiveDesign:
 
     def test_nav_responsive(self, client):
         """Test that navigation is responsive."""
-        response = client.get(reverse("login"))
+        response = client.get(reverse("sign_in"))
         assert response.status_code == 200
         content = response.content.decode()
 
@@ -74,16 +74,13 @@ class TestResponsiveDesign:
         assert "gap-4" in content  # Responsive gap between nav items
 
     def test_forms_have_mobile_friendly_inputs(self, client):
-        """Test that forms use mobile-friendly input types."""
-        response = client.get(reverse("register"))
+        """Test that forms use mobile-friendly input types or mounting points."""
+        response = client.get(reverse("sign_up"))
         assert response.status_code == 200
         content = response.content.decode()
 
-        # Check for proper input types
-        assert 'type="email"' in content or "email" in content
-        assert 'type="password"' in content or "password" in content
-        # Form fields should be full width on mobile
-        assert "w-full" in content
+        # Check for Clerk mounting point
+        assert 'id="sign-up"' in content
 
     def test_button_sizing_accessible(self, client):
         """Test that buttons are properly sized for touch interaction."""
