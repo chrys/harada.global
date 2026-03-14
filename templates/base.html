@@ -3,9 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="{% block meta_description %}HaradaFlow: Achieve self-reliance through the Harada Method 64-cell matrix goal-setting system.{% endblock %}">
     <title>{% block title %}HaradaFlow{% endblock %}</title>
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+            --safe-left: env(safe-area-inset-left);
+            --safe-right: env(safe-area-inset-right);
+        }
+        .pb-safe { padding-bottom: var(--safe-bottom); }
+        .pt-safe { padding-top: var(--safe-top); }
+        .pl-safe { padding-left: var(--safe-left); }
+        .pr-safe { padding-right: var(--safe-right); }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script async crossorigin="anonymous" data-clerk-publishable-key="{{ clerk_publishable_key }}"
@@ -26,7 +38,7 @@
 
 <body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors">
     <nav class="bg-blue-600 dark:bg-blue-900 text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold"><a href="/">HaradaFlow</a></h1>
 
             <!-- Hamburger button (mobile only) -->
@@ -74,7 +86,7 @@
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    <main class="max-w-7xl mx-auto px-4 md:px-8 py-8 pb-safe">
         {% if messages %}
         <div class="mb-4">
             {% for message in messages %}
