@@ -26,9 +26,25 @@ def matrix_view(request, chart_id):
     """Display the 9x9 matrix view of a chart."""
     chart = get_object_or_404(HaradaChart, id=chart_id, user=request.user)
 
+    # Prefetch pillars and tasks for mobile view
+    pillars = list(chart.pillar_set.all().prefetch_related(
+        Prefetch('task_set', queryset=Task.objects.all().order_by('position'))
+    ).order_by('position'))
+    
+    # Helper to access tasks by position in mobile view
+    for pillar in pillars:
+        tasks = list(pillar.task_set.all())
+        pillar.tasks_by_pos = {t.position: t for t in tasks}
+
     grid = build_matrix_grid(chart)
 
-    return render(request, "matrix/view.html", {"chart": chart, "grid": grid})
+    return render(request, "matrix/view.html", {
+        "chart": chart, 
+        "grid": grid, 
+        "pillars": pillars,
+        "color_classes": COLOR_CLASSES,
+        "position_range": range(1, 9)
+    })
 
 
 @login_required
@@ -97,10 +113,19 @@ def task_update(request, chart_id, task_id):
     task.status = request.POST.get("status", task.status)
     task.save()
 
-    # Return updated task cell with wrapper
+    # Return updated task cell with both desktop and mobile wrappers
     from django.template.loader import render_to_string
-    cell_html = render_to_string("matrix/task_cell.html", {"task": task, "chart": chart})
-    wrapped_html = f'<div id="task-cell-{task.id}">{cell_html}</div>'
+    cell_html = render_to_string("matrix/task_cell.html", {
+        "task": task, 
+        "chart": chart,
+        "color_classes": COLOR_CLASSES
+    })
+    
+    # We return a multi-target response to update both desktop and mobile views if they exist
+    # Using HX-Trigger to refresh might be cleaner, but let's try direct replacement first
+    wrapped_html = f'<div id="task-cell-{task.id}" hx-swap-oob="true">{cell_html}</div>'
+    wrapped_html += f'<div id="task-cell-mobile-{task.id}" hx-swap-oob="true">{cell_html}</div>'
+    
     return HttpResponse(wrapped_html)
 
 
@@ -146,7 +171,9 @@ def task_create(request, chart_id, pillar_id, position):
         )
 
     # Simple + reliable: reload page to reflect new grid contents.
-    return HttpResponse("")
+    response = HttpResponse("")
+    response["HX-Refresh"] = "true"
+    return response
 
 
 @login_required

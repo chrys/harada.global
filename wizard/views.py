@@ -8,6 +8,7 @@ import uuid
 import logging
 from datetime import datetime
 from charts.models import HaradaChart, Pillar, Task
+from matrix.views import COLOR_CLASSES
 
 logger = logging.getLogger(__name__)
 
@@ -446,6 +447,7 @@ def wizard_step3(request, chart_id):
             "chart": chart,
             "chart_id": chart_id,
             "pillars": pillars,
+            "color_classes": COLOR_CLASSES,
         },
     )
 
@@ -458,7 +460,11 @@ def wizard_step3_pillar_view(request, chart_id, pillar_id):
     tasks = Task.objects.filter(pillar=pillar).order_by("position")
 
     return render(
-        request, "wizard/step3_pillar.html", {"pillar": pillar, "tasks": tasks}
+        request, "wizard/step3_pillar.html", {
+            "pillar": pillar, 
+            "tasks": tasks,
+            "color_classes": COLOR_CLASSES
+        }
     )
 
 
