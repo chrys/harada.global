@@ -13,10 +13,10 @@
 - [x] Task: Ensure HTMX interactions (adding/editing tasks) work seamlessly in the new mobile view. (267bfc5)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Responsive Matrix View Overhaul' (36cabd4)
 
-## Phase 3: Mobile Modals (Bottom Sheets)
+## Phase 3: Mobile Modals (Bottom Sheets) [checkpoint: 0f8b0d8]
 - [x] Task: Refactor `templates/matrix/*_modal.html` to implement bottom-sheet behavior on mobile (`< 640px`). (0a7e8fe)
 - [x] Task: Ensure transition animations are smooth and consistent across mobile and desktop. (0a7e8fe)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Mobile Modals'
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Mobile Modals' (0f8b0d8)
 
 ## Phase 4: Performance Optimization
 - [ ] Task: Identify and defer/inline render-blocking CSS and JS in `templates/base.html`.
