@@ -7,11 +7,11 @@
 - [x] Task: Update all form inputs to `text-[16px]` for mobile responsiveness. (3a081e1)
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & SEO' (434f523)
 
-## Phase 2: Responsive Matrix View Overhaul
+## Phase 2: Responsive Matrix View Overhaul [checkpoint: 36cabd4]
 - [x] Task: Research and implement a mobile-optimized view for the 9x9 grid in `templates/matrix/view.html` (e.g., Pillar Accordion). (267bfc5)
 - [x] Task: Remove horizontal scroll dependency for the matrix on screens `< 768px`. (267bfc5)
 - [x] Task: Ensure HTMX interactions (adding/editing tasks) work seamlessly in the new mobile view. (267bfc5)
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Responsive Matrix View Overhaul'
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Responsive Matrix View Overhaul' (36cabd4)
 
 ## Phase 3: Mobile Modals (Bottom Sheets)
 - [ ] Task: Refactor `templates/matrix/*_modal.html` to implement bottom-sheet behavior on mobile (`< 640px`).
