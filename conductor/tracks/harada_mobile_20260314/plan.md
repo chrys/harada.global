@@ -14,8 +14,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Responsive Matrix View Overhaul' (36cabd4)
 
 ## Phase 3: Mobile Modals (Bottom Sheets)
-- [ ] Task: Refactor `templates/matrix/*_modal.html` to implement bottom-sheet behavior on mobile (`< 640px`).
-- [ ] Task: Ensure transition animations are smooth and consistent across mobile and desktop.
+- [x] Task: Refactor `templates/matrix/*_modal.html` to implement bottom-sheet behavior on mobile (`< 640px`). (0a7e8fe)
+- [x] Task: Ensure transition animations are smooth and consistent across mobile and desktop. (0a7e8fe)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Mobile Modals'
 
 ## Phase 4: Performance Optimization
