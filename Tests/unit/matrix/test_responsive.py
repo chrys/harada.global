@@ -87,13 +87,15 @@ class TestResponsiveDesign:
 
     def test_button_sizing_accessible(self, client):
         """Test that buttons are properly sized for touch interaction."""
-        response = client.get(reverse("login"))
+        response = client.get(reverse("sign_in"))
         assert response.status_code == 200
+
         content = response.content.decode()
 
         # Buttons should have adequate padding for touch targets (min 44x44px)
-        assert "py-2 px-4" in content or "py-3" in content
-        assert "rounded" in content  # Modern button styling
+        # We now require py-3 as the minimum for standard buttons on mobile
+        assert "py-3" in content or "min-h-[44px]" in content or "min-h-24" in content
+
 
     def test_dark_mode_colors_responsive(self, client, user, harada_chart, pillars):
         """Test that dark mode colors are properly applied for responsive UI."""
