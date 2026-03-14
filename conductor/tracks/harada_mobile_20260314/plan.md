@@ -4,7 +4,7 @@
 - [x] Task: Add Meta Description tags to `templates/base.html` and other key pages. (57fb72d)
 - [x] Task: Implement global mobile padding and safe-area insets in `templates/base.html`. (6a5bd43)
 - [x] Task: Ensure all interactive elements meet the 44x44px touch target requirement. (b887437)
-- [ ] Task: Update all form inputs to `text-[16px]` for mobile responsiveness.
+- [x] Task: Update all form inputs to `text-[16px]` for mobile responsiveness. (3a081e1)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & SEO'
 
 ## Phase 2: Responsive Matrix View Overhaul
