@@ -1,11 +1,23 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 px-0 sm:px-4"
     onclick="if(event.target === this) this.remove()">
     <div
-        class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-4 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col">
-        <h3 class="text-2xl font-bold mb-4">{{ task.title }}</h3>
+        class="bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-lg shadow-lg p-6 sm:p-8 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto pb-safe sm:pb-8 relative">
+        
+        <!-- Mobile Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-6 sm:hidden"></div>
 
-        <form id="task-form" hx-post="{% url 'task_update' chart.id task.id %}" hx-target="#task-cell-{{ task.id }}"
-            hx-swap="outerHTML" hx-on::after-request="document.querySelector('.fixed')?.remove()" class="space-y-4">
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h3 class="text-2xl font-bold">{{ task.title }}</h3>
+                <p class="text-sm text-slate-500">{{ task.pillar.name }}</p>
+            </div>
+            <button onclick="this.closest('.fixed').remove()"
+                class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl leading-none p-2">&times;</button>
+        </div>
+
+        <form id="task-form" hx-post="{% url 'task_update' chart.id task.id %}" hx-swap="none"
+            class="space-y-6 mb-8"
+            hx-on::after-request="if(event.detail.successful) this.closest('.fixed').remove()">
             {% csrf_token %}
 
             <div>
@@ -20,29 +32,30 @@
                     class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-[16px]">{{ task.description }}</textarea>
             </div>
 
-            <div>
-                <label for="frequency" class="block text-sm font-medium mb-1">Frequency</label>
-                <select id="frequency" name="frequency"
-                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-[16px]">
-                    <option value="one_time" {% if task.frequency == "one_time" %}selected{% endif %}>One-time</option>
-                    <option value="routine" {% if task.frequency == "routine" %}selected{% endif %}>Routine</option>
-                </select>
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="frequency" class="block text-sm font-medium mb-1">Frequency</label>
+                    <select id="frequency" name="frequency"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-[16px]">
+                        <option value="one_time" {% if task.frequency == "one_time" %}selected{% endif %}>One-time</option>
+                        <option value="routine" {% if task.frequency == "routine" %}selected{% endif %}>Routine</option>
+                    </select>
+                </div>
 
-            <div>
-                <label for="status" class="block text-sm font-medium mb-1">Status</label>
-                <select id="status" name="status"
-                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-[16px]">
-                    <option value="todo" {% if task.status == "todo" %}selected{% endif %}>To Do</option>
-                    <option value="in_progress" {% if task.status == "in_progress" %}selected{% endif %}>In Progress
-                    </option>
-                    <option value="done" {% if task.status == "done" %}selected{% endif %}>Done</option>
-                </select>
+                <div>
+                    <label for="status" class="block text-sm font-medium mb-1">Status</label>
+                    <select id="status" name="status"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:bg-slate-700 text-[16px]">
+                        <option value="todo" {% if task.status == "todo" %}selected{% endif %}>To Do</option>
+                        <option value="in_progress" {% if task.status == "in_progress" %}selected{% endif %}>In Progress
+                        </option>
+                        <option value="done" {% if task.status == "done" %}selected{% endif %}>Done</option>
+                    </select>
+                </div>
             </div>
         </form>
 
-        <!-- Comments Section (Outside main form) -->
-        <div class="mt-8 border-t border-slate-300 dark:border-slate-700 pt-6 flex-1 overflow-y-auto" id="comments-section">
+        <div class="border-t border-slate-200 dark:border-slate-700 pt-8 mb-8">
             <h4 class="text-lg font-bold mb-4">Comments</h4>
 
             <!-- Add Comment Form -->
@@ -60,16 +73,9 @@
             <!-- Comments List -->
             <div id="comments-list" class="space-y-4">
                 {% for comment in task.comments.all %}
-                <div class="bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="font-medium text-sm">{{ comment.user.username }}</span>
-                        <span class="text-xs text-slate-500 dark:text-slate-400">{{ comment.created_at|date:"M d, Y g:i
-                            A" }}</span>
-                    </div>
-                    <p class="text-sm whitespace-pre-wrap">{{ comment.content }}</p>
-                </div>
+                {% include 'matrix/task_comment.html' with comment=comment %}
                 {% empty %}
-                <p class="text-sm text-slate-500 dark:text-slate-400 italic">No comments yet.</p>
+                <p class="text-slate-500 text-sm italic py-4">No comments yet.</p>
                 {% endfor %}
             </div>
         </div>
