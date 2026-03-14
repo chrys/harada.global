@@ -34,7 +34,7 @@ class TestResponsiveDesign:
         assert "rounded" in content  # Rounded corners (modern mobile-friendly)
 
     def test_matrix_grid_responsive(self, client, user, harada_chart, pillars, tasks):
-        """Test that matrix grid uses responsive grid layout."""
+        """Test that matrix grid uses responsive accordion layout on mobile."""
         client.force_login(user)
         harada_chart.is_draft = False
         harada_chart.save()
@@ -43,10 +43,10 @@ class TestResponsiveDesign:
         assert response.status_code == 200
         content = response.content.decode()
 
-        # Check for responsive grid
-        assert "grid-template-columns: repeat(9" in content
-        assert "minmax" in content  # Grid uses minmax for responsiveness
-        assert "overflow-x-auto" in content  # Horizontal scroll on small screens
+        # Check for responsive layout strategy
+        assert "hidden md:block" in content  # Desktop grid hidden on mobile
+        assert "md:hidden space-y-4" in content  # Mobile view visible on small screens
+        assert "<details" in content  # Uses accordion for mobile
 
     def test_modal_responsive_sizing(self, client, user, harada_chart, pillars):
         """Test that modals are responsive on small screens."""
