@@ -2,7 +2,7 @@
 
 ## Phase 1: Foundation & SEO (Global Improvements)
 - [x] Task: Add Meta Description tags to `templates/base.html` and other key pages. (57fb72d)
-- [ ] Task: Implement global mobile padding and safe-area insets in `templates/base.html`.
+- [x] Task: Implement global mobile padding and safe-area insets in `templates/base.html`. (6a5bd43)
 - [ ] Task: Ensure all interactive elements meet the 44x44px touch target requirement.
 - [ ] Task: Update all form inputs to `text-[16px]` for mobile responsiveness.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & SEO'
