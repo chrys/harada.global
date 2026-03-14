@@ -19,10 +19,10 @@
         .pr-safe { padding-right: var(--safe-right); }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
     <script async crossorigin="anonymous" data-clerk-publishable-key="{{ clerk_publishable_key }}"
         src="https://accepted-gnu-5.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
-        type="text/javascript">
+        type="text/javascript" defer>
         </script>
     
     <!-- Google tag (gtag.js) -->
@@ -34,6 +34,7 @@
 
       gtag('config', 'G-9NFLQYPZVP');
     </script>
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors">
@@ -106,22 +107,44 @@
     </footer>
 
     <script>
+        // Global HaradaFlow Utilities
+        const HaradaFlow = {
+            getCookie: function(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        };
+
         // Mobile menu toggle
         const menuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            menuBtn.textContent = mobileMenu.classList.contains('hidden') ? '☰' : '✕';
-        });
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                menuBtn.textContent = mobileMenu.classList.contains('hidden') ? '☰' : '✕';
+            });
+        }
 
         // Mobile method submenu toggle
         const methodToggle = document.getElementById('mobile-method-toggle');
         const methodSubmenu = document.getElementById('mobile-method-submenu');
         const methodArrow = document.getElementById('mobile-method-arrow');
-        methodToggle.addEventListener('click', () => {
-            methodSubmenu.classList.toggle('hidden');
-            methodArrow.textContent = methodSubmenu.classList.contains('hidden') ? '▼' : '▲';
-        });
+        if (methodToggle && methodSubmenu && methodArrow) {
+            methodToggle.addEventListener('click', () => {
+                methodSubmenu.classList.toggle('hidden');
+                methodArrow.textContent = methodSubmenu.classList.contains('hidden') ? '▼' : '▲';
+            });
+        }
 
         window.addEventListener('load', async () => {
             const clerk = window.Clerk;
@@ -139,7 +162,8 @@
                         <a href="/sign-in" class="text-sm hover:underline">Sign In</a>
                         <a href="/sign-up" class="text-sm hover:underline">Sign Up</a>
                     `;
-                    document.getElementById('user-button').innerHTML = authLinks;
+                    const userBtn = document.getElementById('user-button');
+                    if (userBtn) userBtn.innerHTML = authLinks;
                     const mobileBtnEl = document.getElementById('user-button-mobile');
                     if (mobileBtnEl) mobileBtnEl.innerHTML = authLinks;
                 }
