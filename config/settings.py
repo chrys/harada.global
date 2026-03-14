@@ -11,11 +11,23 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import re
+import logging
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
 load_dotenv()
+
+# Logging filter to remove Clerk authentication traces
+class ClerkHandshakeFilter(logging.Filter):
+    """Remove Clerk authentication handshake tokens from logs."""
+    
+    def filter(self, record):
+        if record.getMessage() and '__clerk_handshake=' in record.getMessage():
+            # Remove the clerk_handshake parameter from the logged URL
+            record.msg = re.sub(r'__clerk_handshake=[^&\s"]+', '__clerk_handshake=***', record.msg)
+        return True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -119,10 +131,16 @@ LOGGING = {
             'style': '{',
         },
     },
+    'filters': {
+        'clerk_filter': {
+            '()': ClerkHandshakeFilter,
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
+            'filters': ['clerk_filter'],
         },
     },
     'root': {

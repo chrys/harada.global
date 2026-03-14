@@ -5,31 +5,18 @@ from charts.models import HaradaChart, Pillar, Task
 
 
 class TestEndToEndFlow:
-    """Test complete user workflow from registration to matrix interaction."""
+    """Test complete user workflow from chart creation to matrix interaction."""
 
     @pytest.mark.django_db
     def test_complete_user_journey(self, client):
-        """Test full journey: register → create chart → view matrix → edit pillar."""
-        # Step 1: Register a new user
-        register_data = {
-            "username": "e2e_testuser",
-            "email": "e2e@example.com",
-            "password1": "SuperSecure123!",
-            "password2": "SuperSecure123!",
-        }
-        response = client.post(reverse("register"), register_data, follow=True)
-        assert response.status_code == 200
-        assert User.objects.filter(username="e2e_testuser").exists()
-
-        # Step 2: Login
-        login_data = {
-            "username": "e2e_testuser",
-            "password": "SuperSecure123!",
-        }
-        response = client.post(reverse("login"), login_data, follow=True)
-        assert response.status_code == 200
-        user = User.objects.get(username="e2e_testuser")
-        assert response.wsgi_request.user == user
+        """Test full journey: create chart → view matrix → edit pillar."""
+        # Step 1: Create a test user (Clerk auth is handled externally)
+        user = User.objects.create_user(
+            username="e2e_testuser",
+            email="e2e@example.com",
+            password="SuperSecure123!",
+        )
+        client.force_login(user)
 
         # Step 3: Start wizard (create draft chart)
         response = client.post(reverse("wizard_start"), follow=True)
@@ -49,7 +36,7 @@ class TestEndToEndFlow:
             "others_intangible": "Be a mentor",
         }
         response = client.post(
-            reverse("wizard_step1", args=[chart.id]), step1_data, follow=True
+            reverse("wizard_step1", kwargs={"chart_id": chart.id}), step1_data, follow=True
         )
         assert response.status_code == 200
         chart.refresh_from_db()
@@ -67,9 +54,10 @@ class TestEndToEndFlow:
             "pillar_8": "Team Building",
         }
         response = client.post(
-            reverse("wizard_step2", args=[chart.id]), step2_data, follow=True
+            reverse("wizard_step2", kwargs={"chart_id": chart.id}), step2_data, follow=True
         )
         assert response.status_code == 200
+        chart.refresh_from_db()
         assert chart.pillar_set.count() == 8
 
         # Step 6: Complete Step 3 (64 tasks)
@@ -80,7 +68,7 @@ class TestEndToEndFlow:
                     f"{pillar.name} Action {i}"
                 )
         response = client.post(
-            reverse("wizard_step3", args=[chart.id]), step3_data, follow=True
+            reverse("wizard_step3", kwargs={"chart_id": chart.id}), step3_data, follow=True
         )
         assert response.status_code == 200
         chart.refresh_from_db()
@@ -88,7 +76,7 @@ class TestEndToEndFlow:
         assert Task.objects.filter(chart=chart).count() == 64
 
         # Step 7: View matrix
-        response = client.get(reverse("matrix_view", args=[chart.id]))
+        response = client.get(reverse("matrix_view", kwargs={"chart_id": chart.id}))
         assert response.status_code == 200
         content = response.content.decode()
         assert "Build a SaaS Product" in content  # Title should be in page title
@@ -96,7 +84,7 @@ class TestEndToEndFlow:
 
         # Step 8: Get pillar modal
         pillar = chart.pillar_set.first()
-        response = client.get(reverse("pillar_modal", args=[chart.id, pillar.id]))
+        response = client.get(reverse("pillar_modal", kwargs={"chart_id": chart.id, "pillar_id": pillar.id}))
         assert response.status_code == 200
         content = response.content.decode()
         assert pillar.name in content
@@ -107,7 +95,7 @@ class TestEndToEndFlow:
             "color": "red",
         }
         response = client.post(
-            reverse("pillar_update", args=[chart.id, pillar.id]),
+            reverse("pillar_update", kwargs={"chart_id": chart.id, "pillar_id": pillar.id}),
             update_data,
         )
         assert response.status_code == 200
@@ -117,7 +105,7 @@ class TestEndToEndFlow:
 
         # Step 10: Get task modal
         task = chart.task_set.first()
-        response = client.get(reverse("task_modal", args=[chart.id, task.id]))
+        response = client.get(reverse("task_modal", kwargs={"chart_id": chart.id, "task_id": task.id}))
         assert response.status_code == 200
         content = response.content.decode()
         assert task.title in content
@@ -130,7 +118,7 @@ class TestEndToEndFlow:
             "status": "in_progress",
         }
         response = client.post(
-            reverse("task_update", args=[chart.id, task.id]),
+            reverse("task_update", kwargs={"chart_id": chart.id, "task_id": task.id}),
             task_update_data,
         )
         assert response.status_code == 200
@@ -139,7 +127,7 @@ class TestEndToEndFlow:
         assert task.status == "in_progress"
 
         # Step 12: Verify completion percentage updates
-        response = client.get(reverse("matrix_view", args=[chart.id]))
+        response = client.get(reverse("matrix_view", kwargs={"chart_id": chart.id}))
         assert response.status_code == 200
         # Chart view should load successfully after task update
 
@@ -151,7 +139,7 @@ class TestEndToEndFlow:
         harada_chart.is_draft = False
         harada_chart.save()
 
-        response = client.get(reverse("matrix_view", args=[harada_chart.id]))
+        response = client.get(reverse("matrix_view", kwargs={"chart_id": harada_chart.id}))
         assert response.status_code == 200
         content = response.content.decode()
 
