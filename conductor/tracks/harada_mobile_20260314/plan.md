@@ -8,9 +8,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & SEO' (434f523)
 
 ## Phase 2: Responsive Matrix View Overhaul
-- [ ] Task: Research and implement a mobile-optimized view for the 9x9 grid in `templates/matrix/view.html` (e.g., Pillar Accordion).
-- [ ] Task: Remove horizontal scroll dependency for the matrix on screens `< 768px`.
-- [ ] Task: Ensure HTMX interactions (adding/editing tasks) work seamlessly in the new mobile view.
+- [x] Task: Research and implement a mobile-optimized view for the 9x9 grid in `templates/matrix/view.html` (e.g., Pillar Accordion). (267bfc5)
+- [x] Task: Remove horizontal scroll dependency for the matrix on screens `< 768px`. (267bfc5)
+- [x] Task: Ensure HTMX interactions (adding/editing tasks) work seamlessly in the new mobile view. (267bfc5)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Responsive Matrix View Overhaul'
 
 ## Phase 3: Mobile Modals (Bottom Sheets)
