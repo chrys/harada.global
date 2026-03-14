@@ -19,7 +19,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Mobile Modals' (0f8b0d8)
 
 ## Phase 4: Performance Optimization
-- [ ] Task: Identify and defer/inline render-blocking CSS and JS in `templates/base.html`.
-- [ ] Task: Audit and reduce unused JavaScript.
-- [ ] Task: Verify LCP and FCP improvements using Lighthouse.
+- [x] Task: Identify and defer/inline render-blocking CSS and JS in `templates/base.html`. (72da7fe)
+- [x] Task: Audit and reduce unused JavaScript. (72da7fe)
+- [x] Task: Verify LCP and FCP improvements using Lighthouse. (72da7fe)
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Performance Optimization'
